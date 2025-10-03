@@ -1,0 +1,41 @@
+
+<?php
+$conn = new mysqli("localhost", "root", "", "fashion_store");
+if ($conn->connect_error) {
+    die("Connection failed");
+}
+
+$sql = "SELECT item_name, price, bought, sold FROM inventory";
+$result = $conn->query($sql);
+
+echo "<h2>Fashion Store Inventory</h2>";
+echo "<table border='1' cellpadding='5'>
+<tr>
+  <th>Item</th>
+  <th>Bought</th>
+  <th>Sold</th>
+  <th>In Stock</th>
+  <th>Total Sales ($)</th>
+</tr>";
+
+$total_money = 0;
+
+while($row = $result->fetch_assoc()) {
+    $in_stock = $row["bought"] - $row["sold"];
+    $sales = $row["sold"] * $row["price"];
+    $total_money += $sales;
+
+    echo "<tr>
+            <td>".$row["item_name"]."</td>
+            <td>".$row["bought"]."</td>
+            <td>".$row["sold"]."</td>
+            <td>".$in_stock."</td>
+            <td>".$sales."</td>
+          </tr>";
+}
+
+echo "</table>";
+echo "<p><b>Total Money Made: $" . $total_money . "</b></p>";
+
+$conn->close();
+?>
